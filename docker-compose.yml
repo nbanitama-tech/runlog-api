@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: runlog-postgres
+    environment:
+      POSTGRES_USER: runlog
+      POSTGRES_PASSWORD: runlog_password
+      POSTGRES_DB: runlog_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - runlog_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  runlog_postgres_data:
