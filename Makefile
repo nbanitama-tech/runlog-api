@@ -74,3 +74,11 @@ db-reset:
 	docker compose up -d
 	sleep 3
 	make migrate-up
+
+vet:
+	go vet ./...
+
+build:
+	go build -o bin/$(APP_NAME) ./cmd/api
+
+ci: fmt vet test build docker-build
