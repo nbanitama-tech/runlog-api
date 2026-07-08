@@ -1,22 +1,16 @@
 package middleware
 
 import (
-	"strings"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-func CORSMiddleware(allowOrigins string) gin.HandlerFunc {
-	origins := strings.Split(allowOrigins, ",")
-
-	for i := range origins {
-		origins[i] = strings.TrimSpace(origins[i])
-	}
+func CORSMiddleware(allowOrigins []string) gin.HandlerFunc {
 
 	return cors.New(cors.Config{
-		AllowOrigins: origins,
+		AllowOrigins: allowOrigins,
 		AllowMethods: []string{
 			"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS",
 		},

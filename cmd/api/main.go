@@ -20,10 +20,14 @@ import (
 
 func main() {
 	ctx := context.Background()
+	startedAt := time.Now()
 
-	cfg := config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("failed to load config: %v", err)
+	}
 
-	db, err := config.NewPostgresPool(ctx, cfg.DatabaseURL)
+	db, err := config.NewPostgresPool(ctx, cfg.Database.URL)
 	if err != nil {
 		log.Fatalf("failed to connect database: %v", err)
 	}
@@ -32,7 +36,7 @@ func main() {
 	appLog := logger.New()
 
 	userRepo := repository.NewUserRepository(db)
-	userUseCase := usecase.NewUserUseCase(userRepo, cfg.JWTSecret, cfg.JWTExpiryHours)
+	userUseCase := usecase.NewUserUseCase(userRepo, cfg.JWT.Secret, cfg.JWT.ExpiryHours)
 	userHandler := handler.NewUserHandler(userUseCase)
 
 	activityRepo := repository.NewActivityRepository(db)
@@ -47,11 +51,13 @@ func main() {
 
 	r.Use(gin.Recovery())
 	r.Use(middleware.RequestIDMiddleware())
-	r.Use(middleware.CORSMiddleware(cfg.CORSAllowOrigins))
+	r.Use(middleware.CORSMiddleware(cfg.CORS.AllowOrigins))
 	r.Use(middleware.LoggerMiddleware(appLog))
 
-	healthHandler := handler.NewHealthHandler(db)
+	healthHandler := handler.NewHealthHandler(db, cfg.App, startedAt)
 	r.GET("/health", healthHandler.Check)
+	r.GET("/health/live", healthHandler.Liveness)
+	r.GET("/health/ready", healthHandler.Readiness)
 
 	v1 := r.Group("/api/v1")
 	{
@@ -59,7 +65,7 @@ func main() {
 		v1.POST("/users/login", userHandler.Login)
 
 		protected := v1.Group("")
-		protected.Use(middleware.AuthMiddleware(cfg.JWTSecret))
+		protected.Use(middleware.AuthMiddleware(cfg.JWT.Secret))
 		{
 			protected.GET("/users/profile", userHandler.Profile)
 			protected.POST("/activities", activityHandler.Create)
@@ -71,7 +77,7 @@ func main() {
 	}
 
 	srv := &http.Server{
-		Addr:    ":" + cfg.AppPort,
+		Addr:    ":" + cfg.App.Port,
 		Handler: r,
 	}
 

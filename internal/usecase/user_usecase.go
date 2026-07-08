@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/nbanitama-tech/runlog-api/internal/model"
 	"github.com/nbanitama-tech/runlog-api/internal/repository"
@@ -14,7 +13,7 @@ import (
 type UserUseCase struct {
 	userRepo       repository.UserRepository
 	jwtSecret      string
-	jwtExpiryHours string
+	jwtExpiryHours int
 }
 
 type LoginResult struct {
@@ -22,7 +21,7 @@ type LoginResult struct {
 	User  *model.User
 }
 
-func NewUserUseCase(userRepo repository.UserRepository, jwtSecret, jwtExpiryHours string) *UserUseCase {
+func NewUserUseCase(userRepo repository.UserRepository, jwtSecret string, jwtExpiryHours int) *UserUseCase {
 	return &UserUseCase{
 		userRepo:       userRepo,
 		jwtSecret:      jwtSecret,
@@ -59,9 +58,9 @@ func (u *UserUseCase) Login(ctx context.Context, email, password string) (*Login
 		return nil, pkgerrors.ErrInvalidCredentials
 	}
 
-	expiryHours, err := strconv.Atoi(u.jwtExpiryHours)
-	if err != nil {
-		expiryHours = 24
+	expiryHours := u.jwtExpiryHours
+	if expiryHours <= 0 {
+		expiryHours = 24 // Default to 24 hours if not set
 	}
 
 	token, err := auth.GenerateToken(user.ID, user.Email, u.jwtSecret, expiryHours)
