@@ -3,6 +3,11 @@ package main
 import (
 	"context"
 	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nbanitama-tech/runlog-api/internal/config"
@@ -42,6 +47,7 @@ func main() {
 
 	r.Use(gin.Recovery())
 	r.Use(middleware.RequestIDMiddleware())
+	r.Use(middleware.CORSMiddleware(cfg.CORSAllowOrigins))
 	r.Use(middleware.LoggerMiddleware(appLog))
 
 	healthHandler := handler.NewHealthHandler(db)
@@ -64,7 +70,28 @@ func main() {
 		}
 	}
 
-	if err := r.Run(":" + cfg.AppPort); err != nil {
-		log.Fatalf("failed to run server: %v", err)
+	srv := &http.Server{
+		Addr:    ":" + cfg.AppPort,
+		Handler: r,
 	}
+
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("failed to run server: %v", err)
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
+	<-quit
+
+	ctxShutdown, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := srv.Shutdown(ctxShutdown); err != nil {
+		log.Fatalf("server forced to shutdown: %v", err)
+	}
+
+	appLog.Info("server exited gracefully")
 }
