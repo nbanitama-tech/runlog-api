@@ -24,3 +24,11 @@ Start any application dependencies:
 docker compose up -d
 ```
 
+## Apply any data migration
+```sh
+docker exec -i runlog-postgres psql -U runlog -d runlog_db < migrations/001_create_users_table.sql
+docker exec -i runlog-postgres psql -U runlog -d runlog_db < migrations/002_create_activities_table.sql
+
+-- verify
+docker exec -it runlog-postgres psql -U runlog -d runlog_db
+```

@@ -7,16 +7,20 @@ import (
 )
 
 type Config struct {
-	AppPort     string
-	DatabaseURL string
+	AppPort        string
+	DatabaseURL    string
+	JWTSecret      string
+	JWTExpiryHours string
 }
 
 func Load() *Config {
 	_ = godotenv.Load()
 
 	return &Config{
-		AppPort:     getEnv("APP_PORT", "8080"),
-		DatabaseURL: getEnv("DATABASE_URL", ""),
+		AppPort:        getEnv("APP_PORT", "8080"),
+		DatabaseURL:    getEnv("DATABASE_URL", ""),
+		JWTSecret:      getEnv("JWT_SECRET", "dev_secret"),
+		JWTExpiryHours: getEnv("JWT_EXPIRY_HOURS", "24"),
 	}
 }
 
