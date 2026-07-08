@@ -9,6 +9,7 @@ import (
 	"github.com/nbanitama-tech/runlog-api/internal/handler"
 	"github.com/nbanitama-tech/runlog-api/internal/repository"
 	"github.com/nbanitama-tech/runlog-api/internal/usecase"
+	logger "github.com/nbanitama-tech/runlog-api/pkg/logging"
 	"github.com/nbanitama-tech/runlog-api/pkg/middleware"
 )
 
@@ -23,6 +24,8 @@ func main() {
 	}
 	defer db.Close()
 
+	appLog := logger.New()
+
 	userRepo := repository.NewUserRepository(db)
 	userUseCase := usecase.NewUserUseCase(userRepo, cfg.JWTSecret, cfg.JWTExpiryHours)
 	userHandler := handler.NewUserHandler(userUseCase)
@@ -35,7 +38,11 @@ func main() {
 		log.Fatalf("failed to ping database: %v", err)
 	}
 
-	r := gin.Default()
+	r := gin.New()
+
+	r.Use(gin.Recovery())
+	r.Use(middleware.RequestIDMiddleware())
+	r.Use(middleware.LoggerMiddleware(appLog))
 
 	healthHandler := handler.NewHealthHandler(db)
 	r.GET("/health", healthHandler.Check)
