@@ -2,6 +2,11 @@ APP_NAME=runlog-api
 
 .PHONY: help
 
+DB_CONTAINER=runlog-postgres
+DB_USER=runlog
+DB_NAME=runlog_db
+MIGRATIONS_DIR=migrations
+
 help:
 	@echo "Available commands:"
 	@echo "  make run"
@@ -12,6 +17,9 @@ help:
 	@echo "  make docker-run"
 	@echo "  make db-up"
 	@echo "  make db-down"
+
+run:
+	go run ./cmd/api
 
 fmt:
 	go fmt ./...
@@ -51,3 +59,18 @@ lint:
 
 deps:
 	go mod download
+
+migrate-up:
+	for file in $(MIGRATIONS_DIR)/*.sql; do \
+		echo "Applying $$file"; \
+		docker exec -i $(DB_CONTAINER) psql -U $(DB_USER) -d $(DB_NAME) < $$file; \
+	done
+
+db-shell:
+	docker exec -it $(DB_CONTAINER) psql -U $(DB_USER) -d $(DB_NAME)
+
+db-reset:
+	docker compose down -v
+	docker compose up -d
+	sleep 3
+	make migrate-up
