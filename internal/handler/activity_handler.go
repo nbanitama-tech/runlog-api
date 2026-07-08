@@ -50,18 +50,7 @@ func (h *ActivityHandler) Create(c *gin.Context) {
 		return
 	}
 
-	response.Created(c, gin.H{
-		"id":               activity.ID,
-		"title":            activity.Title,
-		"sport_type":       activity.SportType,
-		"distance_km":      activity.DistanceKM,
-		"duration_seconds": activity.DurationSeconds,
-		"avg_pace_seconds": activity.AvgPaceSeconds,
-		"elevation_gain_m": activity.ElevationGainM,
-		"activity_date":    activity.ActivityDate.Format("2006-01-02"),
-		"notes":            activity.Notes,
-		"created_at":       activity.CreatedAt,
-	})
+	response.Created(c, dto.ToActivityResponse(*activity))
 }
 
 func (h *ActivityHandler) List(c *gin.Context) {
@@ -73,26 +62,7 @@ func (h *ActivityHandler) List(c *gin.Context) {
 		return
 	}
 
-	responseData := []gin.H{}
-
-	for _, activity := range activities {
-		responseData = append(responseData, gin.H{
-			"id":               activity.ID,
-			"title":            activity.Title,
-			"sport_type":       activity.SportType,
-			"distance_km":      activity.DistanceKM,
-			"duration_seconds": activity.DurationSeconds,
-			"avg_pace_seconds": activity.AvgPaceSeconds,
-			"elevation_gain_m": activity.ElevationGainM,
-			"activity_date":    activity.ActivityDate.Format("2006-01-02"),
-			"notes":            activity.Notes,
-			"created_at":       activity.CreatedAt,
-		})
-	}
-
-	response.OK(c, gin.H{
-		"data": responseData,
-	})
+	response.OK(c, dto.ToActivityResponses(activities))
 }
 
 func (h *ActivityHandler) Detail(c *gin.Context) {
@@ -110,19 +80,7 @@ func (h *ActivityHandler) Detail(c *gin.Context) {
 		return
 	}
 
-	response.OK(c, gin.H{
-		"id":               activity.ID,
-		"title":            activity.Title,
-		"sport_type":       activity.SportType,
-		"distance_km":      activity.DistanceKM,
-		"duration_seconds": activity.DurationSeconds,
-		"avg_pace_seconds": activity.AvgPaceSeconds,
-		"elevation_gain_m": activity.ElevationGainM,
-		"activity_date":    activity.ActivityDate.Format("2006-01-02"),
-		"notes":            activity.Notes,
-		"created_at":       activity.CreatedAt,
-		"updated_at":       activity.UpdatedAt,
-	})
+	response.OK(c, dto.ToActivityResponse(*activity))
 }
 
 type UpdateActivityRequest struct {
@@ -172,18 +130,7 @@ func (h *ActivityHandler) Update(c *gin.Context) {
 		return
 	}
 
-	response.OK(c, gin.H{
-		"id":               activity.ID,
-		"title":            activity.Title,
-		"sport_type":       activity.SportType,
-		"distance_km":      activity.DistanceKM,
-		"duration_seconds": activity.DurationSeconds,
-		"avg_pace_seconds": activity.AvgPaceSeconds,
-		"elevation_gain_m": activity.ElevationGainM,
-		"activity_date":    activity.ActivityDate.Format("2006-01-02"),
-		"notes":            activity.Notes,
-		"updated_at":       activity.UpdatedAt,
-	})
+	response.OK(c, dto.ToActivityResponse(*activity))
 }
 
 func (h *ActivityHandler) Delete(c *gin.Context) {
