@@ -53,6 +53,7 @@ func main() {
 			protected.GET("/activities", activityHandler.List)
 			protected.GET("/activities/:id", activityHandler.Detail)
 			protected.PUT("/activities/:id", activityHandler.Update)
+			protected.DELETE("/activities/:id", activityHandler.Delete)
 		}
 	}
 

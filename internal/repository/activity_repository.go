@@ -2,20 +2,23 @@ package repository
 
 import (
 	"context"
+	"errors"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/nbanitama-tech/runlog-api/internal/model"
+	pkgerrors "github.com/nbanitama-tech/runlog-api/pkg/errors"
 )
 
-type ActivityRepository struct {
+type activityRepository struct {
 	db *pgxpool.Pool
 }
 
-func NewActivityRepository(db *pgxpool.Pool) *ActivityRepository {
-	return &ActivityRepository{db: db}
+func NewActivityRepository(db *pgxpool.Pool) *activityRepository {
+	return &activityRepository{db: db}
 }
 
-func (r *ActivityRepository) Create(ctx context.Context, activity *model.Activity) error {
+func (r *activityRepository) Create(ctx context.Context, activity *model.Activity) error {
 	query := `
 		INSERT INTO activities (
 			user_id, title, sport_type, distance_km, duration_seconds,
@@ -40,7 +43,7 @@ func (r *ActivityRepository) Create(ctx context.Context, activity *model.Activit
 	).Scan(&activity.ID, &activity.CreatedAt, &activity.UpdatedAt)
 }
 
-func (r *ActivityRepository) FindByUserID(ctx context.Context, userID string) ([]model.Activity, error) {
+func (r *activityRepository) FindByUserID(ctx context.Context, userID string) ([]model.Activity, error) {
 	query := `
 		SELECT id, user_id, title, sport_type, distance_km, duration_seconds,
 		       avg_pace_seconds, elevation_gain_m, activity_date, notes,
@@ -85,7 +88,7 @@ func (r *ActivityRepository) FindByUserID(ctx context.Context, userID string) ([
 	return activities, nil
 }
 
-func (r *ActivityRepository) FindByID(ctx context.Context, userID, activityID string) (*model.Activity, error) {
+func (r *activityRepository) FindByID(ctx context.Context, userID, activityID string) (*model.Activity, error) {
 	query := `
 		SELECT id, user_id, title, sport_type, distance_km, duration_seconds,
 		       avg_pace_seconds, elevation_gain_m, activity_date, notes,
@@ -111,13 +114,16 @@ func (r *ActivityRepository) FindByID(ctx context.Context, userID, activityID st
 		&activity.UpdatedAt,
 	)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, pkgerrors.ErrActivityNotFound
+		}
 		return nil, err
 	}
 
 	return activity, nil
 }
 
-func (r *ActivityRepository) Update(ctx context.Context, activity *model.Activity) error {
+func (r *activityRepository) Update(ctx context.Context, activity *model.Activity) error {
 	query := `
 		UPDATE activities
 		SET title = $1,
@@ -133,7 +139,7 @@ func (r *ActivityRepository) Update(ctx context.Context, activity *model.Activit
 		RETURNING updated_at
 	`
 
-	return r.db.QueryRow(
+	err := r.db.QueryRow(
 		ctx,
 		query,
 		activity.Title,
@@ -147,4 +153,30 @@ func (r *ActivityRepository) Update(ctx context.Context, activity *model.Activit
 		activity.UserID,
 		activity.ID,
 	).Scan(&activity.UpdatedAt)
+
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return pkgerrors.ErrActivityNotFound
+		}
+
+	}
+	return nil
+}
+
+func (r *activityRepository) Delete(ctx context.Context, userID, activityID string) error {
+	query := `
+		DELETE FROM activities
+		WHERE user_id = $1 AND id = $2
+	`
+
+	result, err := r.db.Exec(ctx, query, userID, activityID)
+	if err != nil {
+		return err
+	}
+
+	if result.RowsAffected() == 0 {
+		return pkgerrors.ErrActivityNotFound
+	}
+
+	return nil
 }
