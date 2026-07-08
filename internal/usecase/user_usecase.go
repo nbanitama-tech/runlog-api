@@ -2,17 +2,17 @@ package usecase
 
 import (
 	"context"
-	"errors"
 	"strconv"
 
 	"github.com/nbanitama-tech/runlog-api/internal/model"
 	"github.com/nbanitama-tech/runlog-api/internal/repository"
 	"github.com/nbanitama-tech/runlog-api/pkg/auth"
+	pkgerrors "github.com/nbanitama-tech/runlog-api/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UserUseCase struct {
-	userRepo       *repository.UserRepository
+	userRepo       repository.UserRepository
 	jwtSecret      string
 	jwtExpiryHours string
 }
@@ -22,7 +22,7 @@ type LoginResult struct {
 	User  *model.User
 }
 
-func NewUserUseCase(userRepo *repository.UserRepository, jwtSecret, jwtExpiryHours string) *UserUseCase {
+func NewUserUseCase(userRepo repository.UserRepository, jwtSecret, jwtExpiryHours string) *UserUseCase {
 	return &UserUseCase{
 		userRepo:       userRepo,
 		jwtSecret:      jwtSecret,
@@ -52,11 +52,11 @@ func (u *UserUseCase) Register(ctx context.Context, name, email, password string
 func (u *UserUseCase) Login(ctx context.Context, email, password string) (*LoginResult, error) {
 	user, err := u.userRepo.FindByEmail(ctx, email)
 	if err != nil {
-		return nil, errors.New("invalid email or password")
+		return nil, pkgerrors.ErrInvalidCredentials
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password)); err != nil {
-		return nil, errors.New("invalid email or password")
+		return nil, pkgerrors.ErrInvalidCredentials
 	}
 
 	expiryHours, err := strconv.Atoi(u.jwtExpiryHours)

@@ -1,11 +1,14 @@
 package handler
 
 import (
-	"net/http"
+	"errors"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nbanitama-tech/runlog-api/internal/usecase"
+	"github.com/nbanitama-tech/runlog-api/pkg/dto"
+	pkgerrors "github.com/nbanitama-tech/runlog-api/pkg/errors"
+	"github.com/nbanitama-tech/runlog-api/pkg/response"
 )
 
 type ActivityHandler struct {
@@ -16,28 +19,18 @@ func NewActivityHandler(activityUseCase *usecase.ActivityUseCase) *ActivityHandl
 	return &ActivityHandler{activityUseCase: activityUseCase}
 }
 
-type CreateActivityRequest struct {
-	Title           string  `json:"title" binding:"required"`
-	SportType       string  `json:"sport_type"`
-	DistanceKM      float64 `json:"distance_km" binding:"required,gt=0"`
-	DurationSeconds int     `json:"duration_seconds" binding:"required,gt=0"`
-	ElevationGainM  int     `json:"elevation_gain_m"`
-	ActivityDate    string  `json:"activity_date" binding:"required"`
-	Notes           string  `json:"notes"`
-}
-
 func (h *ActivityHandler) Create(c *gin.Context) {
 	userID := c.GetString("user_id")
 
-	var req CreateActivityRequest
+	var req dto.CreateActivityRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		response.BadRequest(c, "invalid request body")
 		return
 	}
 
 	activityDate, err := time.Parse("2006-01-02", req.ActivityDate)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "activity_date must use YYYY-MM-DD format"})
+		response.BadRequest(c, "activity_date must use YYYY-MM-DD format")
 		return
 	}
 
@@ -53,11 +46,11 @@ func (h *ActivityHandler) Create(c *gin.Context) {
 		req.Notes,
 	)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create activity"})
+		response.InternalServerError(c)
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{
+	response.Created(c, gin.H{
 		"id":               activity.ID,
 		"title":            activity.Title,
 		"sport_type":       activity.SportType,
@@ -76,14 +69,14 @@ func (h *ActivityHandler) List(c *gin.Context) {
 
 	activities, err := h.activityUseCase.ListByUserID(c.Request.Context(), userID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get activities"})
+		response.InternalServerError(c)
 		return
 	}
 
-	response := []gin.H{}
+	responseData := []gin.H{}
 
 	for _, activity := range activities {
-		response = append(response, gin.H{
+		responseData = append(responseData, gin.H{
 			"id":               activity.ID,
 			"title":            activity.Title,
 			"sport_type":       activity.SportType,
@@ -97,8 +90,8 @@ func (h *ActivityHandler) List(c *gin.Context) {
 		})
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"data": response,
+	response.OK(c, gin.H{
+		"data": responseData,
 	})
 }
 
@@ -108,11 +101,16 @@ func (h *ActivityHandler) Detail(c *gin.Context) {
 
 	activity, err := h.activityUseCase.GetByID(c.Request.Context(), userID, activityID)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "activity not found"})
+		if errors.Is(err, pkgerrors.ErrActivityNotFound) {
+			response.NotFound(c, "activity not found")
+			return
+		}
+		response.InternalServerError(c)
+
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	response.OK(c, gin.H{
 		"id":               activity.ID,
 		"title":            activity.Title,
 		"sport_type":       activity.SportType,
@@ -143,13 +141,13 @@ func (h *ActivityHandler) Update(c *gin.Context) {
 
 	var req UpdateActivityRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		response.BadRequest(c, "invalid request body")
 		return
 	}
 
 	activityDate, err := time.Parse("2006-01-02", req.ActivityDate)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "activity_date must use YYYY-MM-DD format"})
+		response.BadRequest(c, "activity_date must use YYYY-MM-DD format")
 		return
 	}
 
@@ -166,11 +164,15 @@ func (h *ActivityHandler) Update(c *gin.Context) {
 		req.Notes,
 	)
 	if err != nil {
-		c.JSON(404, gin.H{"error": "activity not found"})
+		if errors.Is(err, pkgerrors.ErrActivityNotFound) {
+			response.NotFound(c, "activity not found")
+			return
+		}
+		response.InternalServerError(c)
 		return
 	}
 
-	c.JSON(200, gin.H{
+	response.OK(c, gin.H{
 		"id":               activity.ID,
 		"title":            activity.Title,
 		"sport_type":       activity.SportType,
@@ -182,4 +184,22 @@ func (h *ActivityHandler) Update(c *gin.Context) {
 		"notes":            activity.Notes,
 		"updated_at":       activity.UpdatedAt,
 	})
+}
+
+func (h *ActivityHandler) Delete(c *gin.Context) {
+	userID := c.GetString("user_id")
+	activityID := c.Param("id")
+
+	err := h.activityUseCase.Delete(c.Request.Context(), userID, activityID)
+	if err != nil {
+		if errors.Is(err, pkgerrors.ErrActivityNotFound) {
+			response.NotFound(c, "activity not found")
+			return
+		}
+
+		response.InternalServerError(c)
+		return
+	}
+
+	response.NoContent(c)
 }

@@ -9,10 +9,10 @@ import (
 )
 
 type ActivityUseCase struct {
-	activityRepo *repository.ActivityRepository
+	activityRepo repository.ActivityRepository
 }
 
-func NewActivityUseCase(activityRepo *repository.ActivityRepository) *ActivityUseCase {
+func NewActivityUseCase(activityRepo repository.ActivityRepository) *ActivityUseCase {
 	return &ActivityUseCase{activityRepo: activityRepo}
 }
 
@@ -102,4 +102,8 @@ func (u *ActivityUseCase) Update(
 	}
 
 	return activity, nil
+}
+
+func (u *ActivityUseCase) Delete(ctx context.Context, userID, activityID string) error {
+	return u.activityRepo.Delete(ctx, userID, activityID)
 }
