@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
+	"strconv"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -43,17 +44,58 @@ func (r *activityRepository) Create(ctx context.Context, activity *model.Activit
 	).Scan(&activity.ID, &activity.CreatedAt, &activity.UpdatedAt)
 }
 
-func (r *activityRepository) FindByUserID(ctx context.Context, userID string) ([]model.Activity, error) {
-	query := `
-		SELECT id, user_id, title, sport_type, distance_km, duration_seconds,
-		       avg_pace_seconds, elevation_gain_m, activity_date, notes,
-		       created_at, updated_at
-		FROM activities
-		WHERE user_id = $1
-		ORDER BY activity_date DESC, created_at DESC
-	`
+func (r *activityRepository) FindByUserID(ctx context.Context, userID string, filter model.ActivityFilter) (*model.ActivityListResult, error) {
+	baseWhere := `WHERE user_id = $1`
+	args := []any{userID}
+	argPos := 2
 
-	rows, err := r.db.Query(ctx, query, userID)
+	if filter.SportType != "" {
+		baseWhere += ` AND sport_type = $` + strconv.Itoa(argPos)
+		args = append(args, filter.SportType)
+		argPos++
+	}
+
+	if filter.From != nil {
+		baseWhere += ` AND activity_date >= $` + strconv.Itoa(argPos)
+		args = append(args, *filter.From)
+		argPos++
+	}
+
+	if filter.To != nil {
+		baseWhere += ` AND activity_date <= $` + strconv.Itoa(argPos)
+		args = append(args, *filter.To)
+		argPos++
+	}
+
+	countQuery := `SELECT COUNT(*) FROM activities ` + baseWhere
+
+	var total int
+	if err := r.db.QueryRow(ctx, countQuery, args...).Scan(&total); err != nil {
+		return nil, err
+	}
+
+	orderBy := "activity_date"
+	if filter.SortBy != "" {
+		orderBy = filter.SortBy
+	}
+
+	orderDirection := "DESC"
+	if filter.SortOrder == "ASC" {
+		orderDirection = "ASC"
+	}
+
+	query := `
+	SELECT id, user_id, title, sport_type, distance_km, duration_seconds,
+	       avg_pace_seconds, elevation_gain_m, activity_date, notes,
+	       created_at, updated_at
+	FROM activities
+` + baseWhere + `
+	ORDER BY ` + orderBy + ` ` + orderDirection + `, created_at DESC
+	LIMIT $` + strconv.Itoa(argPos) + ` OFFSET $` + strconv.Itoa(argPos+1)
+
+	args = append(args, filter.PageSize, filter.Offset)
+
+	rows, err := r.db.Query(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +106,7 @@ func (r *activityRepository) FindByUserID(ctx context.Context, userID string) ([
 	for rows.Next() {
 		var activity model.Activity
 
-		err := rows.Scan(
+		if err := rows.Scan(
 			&activity.ID,
 			&activity.UserID,
 			&activity.Title,
@@ -77,15 +119,21 @@ func (r *activityRepository) FindByUserID(ctx context.Context, userID string) ([
 			&activity.Notes,
 			&activity.CreatedAt,
 			&activity.UpdatedAt,
-		)
-		if err != nil {
+		); err != nil {
 			return nil, err
 		}
 
 		activities = append(activities, activity)
 	}
 
-	return activities, nil
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return &model.ActivityListResult{
+		Activities: activities,
+		Total:      total,
+	}, nil
 }
 
 func (r *activityRepository) FindByID(ctx context.Context, userID, activityID string) (*model.Activity, error) {

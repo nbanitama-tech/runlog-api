@@ -15,3 +15,13 @@ type ActivityResponse struct {
 	CreatedAt       time.Time `json:"created_at,omitempty"`
 	UpdatedAt       time.Time `json:"updated_at,omitempty"`
 }
+
+type ActivityResponseEnvelope struct {
+	Success bool             `json:"success" example:"true"`
+	Data    ActivityResponse `json:"data"`
+}
+
+type ActivityListResponseEnvelope struct {
+	Success bool               `json:"success" example:"true"`
+	Data    []ActivityResponse `json:"data"`
+}

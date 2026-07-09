@@ -19,6 +19,19 @@ func NewActivityHandler(activityUseCase *usecase.ActivityUseCase) *ActivityHandl
 	return &ActivityHandler{activityUseCase: activityUseCase}
 }
 
+// CreateActivity godoc
+//
+//	@Summary		Create activity
+//	@Description	Create a new running activity
+//	@Tags			Activities
+//	@Security		BearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		dto.CreateActivityRequest	true	"Activity"
+//	@Success		201		{object}	dto.ActivityResponseEnvelope
+//	@Failure		400		{object}	dto.ErrorResponse
+//	@Failure		401		{object}	dto.ErrorResponse
+//	@Router			/activities [post]
 func (h *ActivityHandler) Create(c *gin.Context) {
 	userID := c.GetString("user_id")
 
@@ -53,17 +66,72 @@ func (h *ActivityHandler) Create(c *gin.Context) {
 	response.Created(c, dto.ToActivityResponse(*activity))
 }
 
+// ListActivities godoc
+//
+//	@Summary		List activities
+//	@Description	Get all activities for the authenticated user
+//	@Tags			Activities
+//	@Security		BearerAuth
+//	@Produce		json
+//	@Param			page		query		int		false	"Page number"
+//	@Param			page_size	query		int		false	"Page size"
+//	@Param			sport_type	query		string	false	"Sport type"
+//	@Param			from		query		string	false	"From date YYYY-MM-DD"
+//	@Param			to			query		string	false	"To date YYYY-MM-DD"
+//	@Param			sort	query	string	false	"Sort field. Use -field for descending. Example: -activity_date"
+//	@Success		200			{object}	dto.PaginatedActivityResponseEnvelope
+//	@Success		200	{array}		dto.ActivityResponseEnvelope
+//	@Failure		401	{object}	dto.ErrorResponse
+//	@Router			/activities [get]
 func (h *ActivityHandler) List(c *gin.Context) {
 	userID := c.GetString("user_id")
 
-	activities, err := h.activityUseCase.ListByUserID(c.Request.Context(), userID)
+	var query dto.ListActivityQuery
+	if err := c.ShouldBindQuery(&query); err != nil {
+		response.BadRequest(c, err.Error())
+		return
+	}
+
+	filter, err := query.ToFilter()
+	if err != nil {
+		response.BadRequest(c, err.Error())
+		return
+	}
+
+	result, err := h.activityUseCase.ListByUserID(c.Request.Context(), userID, filter)
 	if err != nil {
 		response.InternalServerError(c)
 		return
 	}
 
-	response.OK(c, dto.ToActivityResponses(activities))
+	totalPages := 0
+	if result.Total > 0 {
+		totalPages = (result.Total + filter.PageSize - 1) / filter.PageSize
+	}
+
+	c.JSON(200, gin.H{
+		"success": true,
+		"data":    dto.ToActivityResponses(result.Activities),
+		"meta": dto.PaginationMeta{
+			Page:       filter.Page,
+			PageSize:   filter.PageSize,
+			Total:      result.Total,
+			TotalPages: totalPages,
+		},
+	})
 }
+
+// GetActivity godoc
+//
+//	@Summary		Get activity
+//	@Description	Get activity by ID
+//	@Tags			Activities
+//	@Security		BearerAuth
+//	@Produce		json
+//	@Param			id	path		string	true	"Activity ID"
+//	@Success		200	{object}	dto.ActivityResponseEnvelope
+//	@Failure		404	{object}	dto.ErrorResponse
+//	@Router			/activities/{id} [get]
 
 func (h *ActivityHandler) Detail(c *gin.Context) {
 	userID := c.GetString("user_id")
@@ -93,6 +161,19 @@ type UpdateActivityRequest struct {
 	Notes           string  `json:"notes"`
 }
 
+// UpdateActivity godoc
+//
+//	@Summary		Update activity
+//	@Description	Update an existing activity
+//	@Tags			Activities
+//	@Security		BearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		string						true	"Activity ID"
+//	@Param			request	body		dto.UpdateActivityRequest	true	"Activity"
+//	@Success		200		{object}	dto.ActivityResponseEnvelope
+//	@Failure		404		{object}	dto.ErrorResponse
+//	@Router			/activities/{id} [put]
 func (h *ActivityHandler) Update(c *gin.Context) {
 	userID := c.GetString("user_id")
 	activityID := c.Param("id")
@@ -133,6 +214,17 @@ func (h *ActivityHandler) Update(c *gin.Context) {
 	response.OK(c, dto.ToActivityResponse(*activity))
 }
 
+// DeleteActivity godoc
+//
+//	@Summary		Delete activity
+//	@Description	Delete activity by ID
+//	@Tags			Activities
+//	@Security		BearerAuth
+//	@Produce		json
+//	@Param			id	path	string	true	"Activity ID"
+//	@Success		204
+//	@Failure		404	{object}	dto.ErrorResponse
+//	@Router			/activities/{id} [delete]
 func (h *ActivityHandler) Delete(c *gin.Context) {
 	userID := c.GetString("user_id")
 	activityID := c.Param("id")

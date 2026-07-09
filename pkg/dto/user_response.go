@@ -13,3 +13,13 @@ type LoginResponse struct {
 	Token string       `json:"token"`
 	User  UserResponse `json:"user"`
 }
+
+type UserResponseEnvelope struct {
+	Success bool         `json:"success" example:"true"`
+	Data    UserResponse `json:"data"`
+}
+
+type LoginResponseEnvelope struct {
+	Success bool          `json:"success" example:"true"`
+	Data    LoginResponse `json:"data"`
+}

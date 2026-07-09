@@ -16,6 +16,18 @@ func NewUserHandler(userUseCase *usecase.UserUseCase) *UserHandler {
 	return &UserHandler{userUseCase: userUseCase}
 }
 
+// Register godoc
+//
+//	@Summary		Register a new user
+//	@Description	Create a new RunLog user account
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		dto.RegisterRequest	true	"Register request"
+//	@Success		201		{object}	dto.UserResponseEnvelope
+//	@Failure		400		{object}	dto.ErrorResponse
+//	@Failure		500		{object}	dto.ErrorResponse
+//	@Router			/users/register [post]
 func (h *UserHandler) Register(c *gin.Context) {
 	var req dto.RegisterRequest
 
@@ -33,6 +45,17 @@ func (h *UserHandler) Register(c *gin.Context) {
 	response.Created(c, user)
 }
 
+// Login godoc
+//
+//	@Summary		User login
+//	@Description	Authenticate user and return JWT
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		dto.LoginRequest	true	"Login request"
+//	@Success		200		{object}	dto.LoginResponseEnvelope
+//	@Failure		401		{object}	dto.ErrorResponse
+//	@Router			/users/login [post]
 func (h *UserHandler) Login(c *gin.Context) {
 	var req dto.LoginRequest
 
@@ -62,6 +85,16 @@ func (h *UserHandler) Login(c *gin.Context) {
 	})
 }
 
+// Profile godoc
+//
+//	@Summary		Get current user
+//	@Description	Get authenticated user profile
+//	@Tags			Users
+//	@Security		BearerAuth
+//	@Produce		json
+//	@Success		200	{object}	dto.UserResponseEnvelope
+//	@Failure		401	{object}	dto.ErrorResponse
+//	@Router			/users/profile [get]
 func (h *UserHandler) Profile(c *gin.Context) {
 	userID := c.GetString("user_id")
 	email := c.GetString("email")

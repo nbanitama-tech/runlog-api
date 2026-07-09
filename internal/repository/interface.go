@@ -13,7 +13,7 @@ type UserRepository interface {
 
 type ActivityRepository interface {
 	Create(ctx context.Context, activity *model.Activity) error
-	FindByUserID(ctx context.Context, userID string) ([]model.Activity, error)
+	FindByUserID(ctx context.Context, userID string, filter model.ActivityFilter) (*model.ActivityListResult, error)
 	FindByID(ctx context.Context, userID, activityID string) (*model.Activity, error)
 	Update(ctx context.Context, activity *model.Activity) error
 	Delete(ctx context.Context, userID, activityID string) error
