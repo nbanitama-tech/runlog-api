@@ -1,0 +1,401 @@
+basePath: /api/v1
+definitions:
+  github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponse:
+    properties:
+      activity_date:
+        type: string
+      avg_pace_seconds:
+        type: integer
+      created_at:
+        type: string
+      distance_km:
+        type: number
+      duration_seconds:
+        type: integer
+      elevation_gain_m:
+        type: integer
+      id:
+        type: string
+      notes:
+        type: string
+      sport_type:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponseEnvelope:
+    properties:
+      data:
+        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponse'
+      success:
+        example: true
+        type: boolean
+    type: object
+  github_com_nbanitama-tech_runlog-api_pkg_dto.CreateActivityRequest:
+    properties:
+      activity_date:
+        type: string
+      distance_km:
+        type: number
+      duration_seconds:
+        type: integer
+      elevation_gain_m:
+        type: integer
+      notes:
+        type: string
+      sport_type:
+        type: string
+      title:
+        type: string
+    required:
+    - activity_date
+    - distance_km
+    - duration_seconds
+    - title
+    type: object
+  github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorBody:
+    properties:
+      code:
+        example: UNAUTHORIZED
+        type: string
+      message:
+        example: invalid email or password
+        type: string
+    type: object
+  github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse:
+    properties:
+      error:
+        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorBody'
+      success:
+        example: false
+        type: boolean
+    type: object
+  github_com_nbanitama-tech_runlog-api_pkg_dto.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  github_com_nbanitama-tech_runlog-api_pkg_dto.LoginResponse:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponse'
+    type: object
+  github_com_nbanitama-tech_runlog-api_pkg_dto.LoginResponseEnvelope:
+    properties:
+      data:
+        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.LoginResponse'
+      success:
+        example: true
+        type: boolean
+    type: object
+  github_com_nbanitama-tech_runlog-api_pkg_dto.PaginatedActivityResponseEnvelope:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponse'
+        type: array
+      meta:
+        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.PaginationMeta'
+      success:
+        example: true
+        type: boolean
+    type: object
+  github_com_nbanitama-tech_runlog-api_pkg_dto.PaginationMeta:
+    properties:
+      page:
+        example: 1
+        type: integer
+      page_size:
+        example: 20
+        type: integer
+      total:
+        example: 100
+        type: integer
+      total_pages:
+        example: 5
+        type: integer
+    type: object
+  github_com_nbanitama-tech_runlog-api_pkg_dto.RegisterRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  github_com_nbanitama-tech_runlog-api_pkg_dto.UpdateActivityRequest:
+    properties:
+      activity_date:
+        type: string
+      distance_km:
+        type: number
+      duration_seconds:
+        type: integer
+      elevation_gain_m:
+        type: integer
+      notes:
+        type: string
+      sport_type:
+        type: string
+      title:
+        type: string
+    required:
+    - activity_date
+    - distance_km
+    - duration_seconds
+    - title
+    type: object
+  github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponseEnvelope:
+    properties:
+      data:
+        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponse'
+      success:
+        example: true
+        type: boolean
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Production-style running activity tracker API.
+  title: RunLog API
+  version: "1.0"
+paths:
+  /activities:
+    get:
+      description: Get all activities for the authenticated user
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      - description: Sport type
+        in: query
+        name: sport_type
+        type: string
+      - description: From date YYYY-MM-DD
+        in: query
+        name: from
+        type: string
+      - description: To date YYYY-MM-DD
+        in: query
+        name: to
+        type: string
+      - description: 'Sort field. Use -field for descending. Example: -activity_date'
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponseEnvelope'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List activities
+      tags:
+      - Activities
+    post:
+      consumes:
+      - application/json
+      description: Create a new running activity
+      parameters:
+      - description: Activity
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.CreateActivityRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponseEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create activity
+      tags:
+      - Activities
+  /activities/{id}:
+    delete:
+      description: Delete activity by ID
+      parameters:
+      - description: Activity ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete activity
+      tags:
+      - Activities
+    put:
+      consumes:
+      - application/json
+      description: Update an existing activity
+      parameters:
+      - description: Activity ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Activity
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.UpdateActivityRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponseEnvelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update activity
+      tags:
+      - Activities
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and return JWT
+      parameters:
+      - description: Login request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.LoginResponseEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+      summary: User login
+      tags:
+      - Users
+  /users/profile:
+    get:
+      description: Get authenticated user profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponseEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get current user
+      tags:
+      - Users
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new RunLog user account
+      parameters:
+      - description: Register request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponseEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+      summary: Register a new user
+      tags:
+      - Users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

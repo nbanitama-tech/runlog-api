@@ -10,14 +10,25 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/nbanitama-tech/runlog-api/docs"
 	"github.com/nbanitama-tech/runlog-api/internal/config"
 	"github.com/nbanitama-tech/runlog-api/internal/handler"
 	"github.com/nbanitama-tech/runlog-api/internal/repository"
 	"github.com/nbanitama-tech/runlog-api/internal/usecase"
 	logger "github.com/nbanitama-tech/runlog-api/pkg/logging"
 	"github.com/nbanitama-tech/runlog-api/pkg/middleware"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title RunLog API
+// @version 1.0
+// @description Production-style running activity tracker API.
+// @host localhost:8080
+// @BasePath /api/v1
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	ctx := context.Background()
 	startedAt := time.Now()
@@ -75,6 +86,8 @@ func main() {
 			protected.DELETE("/activities/:id", activityHandler.Delete)
 		}
 	}
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	srv := &http.Server{
 		Addr:    ":" + cfg.App.Port,

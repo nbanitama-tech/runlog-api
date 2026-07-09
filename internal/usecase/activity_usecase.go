@@ -55,8 +55,8 @@ func (u *ActivityUseCase) Create(
 	return activity, nil
 }
 
-func (u *ActivityUseCase) ListByUserID(ctx context.Context, userID string) ([]model.Activity, error) {
-	return u.activityRepo.FindByUserID(ctx, userID)
+func (u *ActivityUseCase) ListByUserID(ctx context.Context, userID string, filter model.ActivityFilter) (*model.ActivityListResult, error) {
+	return u.activityRepo.FindByUserID(ctx, userID, filter)
 }
 
 func (u *ActivityUseCase) GetByID(ctx context.Context, userID, activityID string) (*model.Activity, error) {

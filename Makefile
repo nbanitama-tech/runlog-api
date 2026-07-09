@@ -1,6 +1,7 @@
 APP_NAME=runlog-api
 
 .PHONY: help
+.PHONY: swagger
 
 DB_CONTAINER=runlog-postgres
 DB_USER=runlog
@@ -17,6 +18,7 @@ help:
 	@echo "  make docker-run"
 	@echo "  make db-up"
 	@echo "  make db-down"
+
 
 run:
 	go run ./cmd/api
@@ -82,3 +84,13 @@ build:
 	go build -o bin/$(APP_NAME) ./cmd/api
 
 ci: fmt vet test build docker-build
+
+test-cover:
+	go test ./... -cover
+
+test-cover-html:
+	go test ./... -coverprofile=coverage.out
+	go tool cover -html=coverage.out
+
+swagger:
+	swag init -g cmd/api/main.go --parseDependency --parseInternal
