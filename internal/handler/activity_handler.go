@@ -1,21 +1,30 @@
 package handler
 
 import (
+	"context"
 	"errors"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nbanitama-tech/runlog-api/internal/usecase"
+	"github.com/nbanitama-tech/runlog-api/internal/model"
 	"github.com/nbanitama-tech/runlog-api/pkg/dto"
 	pkgerrors "github.com/nbanitama-tech/runlog-api/pkg/errors"
 	"github.com/nbanitama-tech/runlog-api/pkg/response"
 )
 
-type ActivityHandler struct {
-	activityUseCase *usecase.ActivityUseCase
+type ActivityUseCase interface {
+	Create(ctx context.Context, userID, title, sportType string, distanceKM float64, durationSeconds, elevationGainM int, activityDate time.Time, notes string) (*model.Activity, error)
+	ListByUserID(ctx context.Context, userID string, filter model.ActivityFilter) (*model.ActivityListResult, error)
+	GetByID(ctx context.Context, userID, activityID string) (*model.Activity, error)
+	Update(ctx context.Context, userID, activityID, title, sportType string, distanceKM float64, durationSeconds, elevationGainM int, activityDate time.Time, notes string) (*model.Activity, error)
+	Delete(ctx context.Context, userID, activityID string) error
 }
 
-func NewActivityHandler(activityUseCase *usecase.ActivityUseCase) *ActivityHandler {
+type ActivityHandler struct {
+	activityUseCase ActivityUseCase
+}
+
+func NewActivityHandler(activityUseCase ActivityUseCase) *ActivityHandler {
 	return &ActivityHandler{activityUseCase: activityUseCase}
 }
 

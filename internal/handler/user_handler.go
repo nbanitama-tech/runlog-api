@@ -1,18 +1,26 @@
 package handler
 
 import (
+	"context"
+
 	"github.com/gin-gonic/gin"
+	"github.com/nbanitama-tech/runlog-api/internal/model"
 	"github.com/nbanitama-tech/runlog-api/internal/usecase"
 	"github.com/nbanitama-tech/runlog-api/pkg/dto"
 	pkgerrors "github.com/nbanitama-tech/runlog-api/pkg/errors"
 	"github.com/nbanitama-tech/runlog-api/pkg/response"
 )
 
-type UserHandler struct {
-	userUseCase *usecase.UserUseCase
+type UserUseCase interface {
+	Register(ctx context.Context, name, email, password string) (*model.User, error)
+	Login(ctx context.Context, email, password string) (*usecase.LoginResult, error)
 }
 
-func NewUserHandler(userUseCase *usecase.UserUseCase) *UserHandler {
+type UserHandler struct {
+	userUseCase UserUseCase
+}
+
+func NewUserHandler(userUseCase UserUseCase) *UserHandler {
 	return &UserHandler{userUseCase: userUseCase}
 }
 
