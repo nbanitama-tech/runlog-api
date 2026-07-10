@@ -9,6 +9,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// Load reads the configuration settings from environment variables and returns a Config struct containing the loaded values. It uses the godotenv package to load environment variables from a .env file if present. The function retrieves various configuration values, including application settings, database connection URL, JWT secret and expiration hours, and CORS allowed origins. It also performs validation to ensure required configuration values are provided. If any required value is missing or invalid, an error is returned.
 func Load() (*Config, error) {
 	_ = godotenv.Load()
 

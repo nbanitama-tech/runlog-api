@@ -286,6 +286,30 @@ paths:
       summary: Delete activity
       tags:
       - Activities
+    get:
+      description: Get activity by ID
+      parameters:
+      - description: Activity ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponseEnvelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get activity
+      tags:
+      - Activities
     put:
       consumes:
       - application/json

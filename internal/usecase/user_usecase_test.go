@@ -14,12 +14,12 @@ type mockUserRepository struct {
 	err         error
 }
 
-func (m *mockUserRepository) Create(ctx context.Context, user *model.User) error {
+func (m *mockUserRepository) Create(_ context.Context, user *model.User) error {
 	m.createdUser = user
 	return m.err
 }
 
-func (m *mockUserRepository) FindByEmail(ctx context.Context, email string) (*model.User, error) {
+func (m *mockUserRepository) FindByEmail(_ context.Context, _ string) (*model.User, error) {
 	if m.err != nil {
 		return nil, m.err
 	}

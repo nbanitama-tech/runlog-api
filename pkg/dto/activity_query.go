@@ -8,6 +8,7 @@ import (
 	"github.com/nbanitama-tech/runlog-api/internal/model"
 )
 
+// ToFilter converts a ListActivityQuery to a model.ActivityFilter. It processes the query parameters, including pagination, date range, and sorting options, and returns a corresponding ActivityFilter struct. The function validates the input values and ensures that they are properly formatted for use in filtering activity data in the RunLog API application.
 func (q ListActivityQuery) ToFilter() (model.ActivityFilter, error) {
 	page := q.Page
 	if page <= 0 {

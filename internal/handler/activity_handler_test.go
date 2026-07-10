@@ -20,23 +20,23 @@ type mockActivityUseCase struct {
 	err      error
 }
 
-func (m *mockActivityUseCase) Create(ctx context.Context, userID, title, sportType string, distanceKM float64, durationSeconds, elevationGainM int, activityDate time.Time, notes string) (*model.Activity, error) {
+func (m *mockActivityUseCase) Create(_ context.Context, _, _, _ string, _ float64, _, _ int, _ time.Time, _ string) (*model.Activity, error) {
 	return m.activity, m.err
 }
 
-func (m *mockActivityUseCase) ListByUserID(ctx context.Context, userID string, filter model.ActivityFilter) (*model.ActivityListResult, error) {
+func (m *mockActivityUseCase) ListByUserID(_ context.Context, _ string, _ model.ActivityFilter) (*model.ActivityListResult, error) {
 	return m.result, m.err
 }
 
-func (m *mockActivityUseCase) GetByID(ctx context.Context, userID, activityID string) (*model.Activity, error) {
+func (m *mockActivityUseCase) GetByID(_ context.Context, _, _ string) (*model.Activity, error) {
 	return m.activity, m.err
 }
 
-func (m *mockActivityUseCase) Update(ctx context.Context, userID, activityID, title, sportType string, distanceKM float64, durationSeconds, elevationGainM int, activityDate time.Time, notes string) (*model.Activity, error) {
+func (m *mockActivityUseCase) Update(_ context.Context, _, _, _, _ string, _ float64, _, _ int, _ time.Time, _ string) (*model.Activity, error) {
 	return m.activity, m.err
 }
 
-func (m *mockActivityUseCase) Delete(ctx context.Context, userID, activityID string) error {
+func (m *mockActivityUseCase) Delete(_ context.Context, _, _ string) error {
 	return m.err
 }
 

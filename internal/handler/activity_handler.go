@@ -1,3 +1,4 @@
+// Package handler provides HTTP handlers for the RunLog API application. It defines the ActivityHandler struct, which handles requests related to user activities, such as creating, listing, retrieving, updating, and deleting activities. The handlers interact with the ActivityUseCase interface to perform business logic and return appropriate HTTP responses. The package also includes request and response DTOs for activity-related operations.
 package handler
 
 import (
@@ -12,6 +13,7 @@ import (
 	"github.com/nbanitama-tech/runlog-api/pkg/response"
 )
 
+// ActivityUseCase defines the interface for the activity use case, which encapsulates the business logic for managing user activities. It includes methods for creating, listing, retrieving, updating, and deleting activities, allowing the ActivityHandler to interact with the underlying business logic layer.
 type ActivityUseCase interface {
 	Create(ctx context.Context, userID, title, sportType string, distanceKM float64, durationSeconds, elevationGainM int, activityDate time.Time, notes string) (*model.Activity, error)
 	ListByUserID(ctx context.Context, userID string, filter model.ActivityFilter) (*model.ActivityListResult, error)
@@ -20,14 +22,17 @@ type ActivityUseCase interface {
 	Delete(ctx context.Context, userID, activityID string) error
 }
 
+// ActivityHandler handles HTTP requests related to user activities. It provides methods for creating, listing, retrieving, updating, and deleting activities, interacting with the ActivityUseCase interface to perform business logic and return appropriate HTTP responses.
 type ActivityHandler struct {
 	activityUseCase ActivityUseCase
 }
 
+// NewActivityHandler creates a new instance of ActivityHandler with the provided ActivityUseCase. It initializes the handler with the necessary dependencies to handle activity-related HTTP requests.
 func NewActivityHandler(activityUseCase ActivityUseCase) *ActivityHandler {
 	return &ActivityHandler{activityUseCase: activityUseCase}
 }
 
+// Create handles the HTTP request for creating a new activity. It validates the request body, parses the activity date, and calls the ActivityUseCase to create the activity. If successful, it returns a 201 Created response with the created activity; otherwise, it returns an appropriate error response.
 // CreateActivity godoc
 //
 //	@Summary		Create activity
@@ -75,6 +80,7 @@ func (h *ActivityHandler) Create(c *gin.Context) {
 	response.Created(c, dto.ToActivityResponse(*activity))
 }
 
+// List handles the HTTP request for listing activities for the authenticated user. It validates query parameters, constructs a filter, and calls the ActivityUseCase to retrieve the list of activities. The response includes pagination metadata and the list of activities, or an appropriate error response if an error occurs.
 // ListActivities godoc
 //
 //	@Summary		List activities
@@ -130,6 +136,7 @@ func (h *ActivityHandler) List(c *gin.Context) {
 	})
 }
 
+// Detail handles the HTTP request for retrieving a specific activity by its ID. It calls the ActivityUseCase to get the activity details and returns a 200 OK response with the activity data if found, or a 404 Not Found response if the activity does not exist.
 // GetActivity godoc
 //
 //	@Summary		Get activity
@@ -141,7 +148,6 @@ func (h *ActivityHandler) List(c *gin.Context) {
 //	@Success		200	{object}	dto.ActivityResponseEnvelope
 //	@Failure		404	{object}	dto.ErrorResponse
 //	@Router			/activities/{id} [get]
-
 func (h *ActivityHandler) Detail(c *gin.Context) {
 	userID := c.GetString("user_id")
 	activityID := c.Param("id")
@@ -160,6 +166,7 @@ func (h *ActivityHandler) Detail(c *gin.Context) {
 	response.OK(c, dto.ToActivityResponse(*activity))
 }
 
+// UpdateActivityRequest represents the request payload for updating an activity. It includes fields for the activity title, sport type, distance, duration, elevation gain, activity date, and notes. The struct uses JSON tags for serialization and validation tags to enforce required fields and constraints.
 type UpdateActivityRequest struct {
 	Title           string  `json:"title" binding:"required"`
 	SportType       string  `json:"sport_type"`
@@ -170,6 +177,7 @@ type UpdateActivityRequest struct {
 	Notes           string  `json:"notes"`
 }
 
+// Update handles the HTTP request for updating an existing activity. It validates the request body, parses the activity date, and calls the ActivityUseCase to update the activity. If successful, it returns a 200 OK response with the updated activity; otherwise, it returns an appropriate error response.
 // UpdateActivity godoc
 //
 //	@Summary		Update activity
@@ -223,6 +231,7 @@ func (h *ActivityHandler) Update(c *gin.Context) {
 	response.OK(c, dto.ToActivityResponse(*activity))
 }
 
+// Delete handles the HTTP request for deleting an activity by its ID. It calls the ActivityUseCase to perform the deletion and returns a 204 No Content response if successful, or a 404 Not Found response if the activity does not exist.
 // DeleteActivity godoc
 //
 //	@Summary		Delete activity

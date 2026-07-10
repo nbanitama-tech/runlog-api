@@ -14,6 +14,7 @@ type userRepository struct {
 	db *pgxpool.Pool
 }
 
+// NewUserRepository creates a new instance of userRepository with the provided PostgreSQL connection pool. It initializes the repository with the necessary database connection to perform CRUD operations on user data in the RunLog API application.
 func NewUserRepository(db *pgxpool.Pool) UserRepository {
 	return &userRepository{db: db}
 }

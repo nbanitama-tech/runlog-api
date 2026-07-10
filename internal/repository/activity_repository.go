@@ -1,3 +1,4 @@
+// Package repository provides the data access layer for the RunLog API application. It defines the ActivityRepository interface and its implementation, which interacts with the PostgreSQL database to perform CRUD operations on user activities. The package uses the pgx library for database connectivity and query execution, and it handles errors related to activity retrieval and manipulation.
 package repository
 
 import (
@@ -15,7 +16,8 @@ type activityRepository struct {
 	db *pgxpool.Pool
 }
 
-func NewActivityRepository(db *pgxpool.Pool) *activityRepository {
+// NewActivityRepository creates a new activity repository with the provided PostgreSQL connection pool. It initializes the repository with the necessary database connection to perform CRUD operations on user activities in the RunLog API application.
+func NewActivityRepository(db *pgxpool.Pool) ActivityRepository {
 	return &activityRepository{db: db}
 }
 
@@ -207,6 +209,7 @@ func (r *activityRepository) Update(ctx context.Context, activity *model.Activit
 			return pkgerrors.ErrActivityNotFound
 		}
 
+		return err
 	}
 	return nil
 }

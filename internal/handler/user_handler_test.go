@@ -21,11 +21,11 @@ type mockUserUseCase struct {
 	err          error
 }
 
-func (m *mockUserUseCase) Register(ctx context.Context, name, email, password string) (*model.User, error) {
+func (m *mockUserUseCase) Register(_ context.Context, _, _, _ string) (*model.User, error) {
 	return m.registerUser, m.err
 }
 
-func (m *mockUserUseCase) Login(ctx context.Context, email, password string) (*usecase.LoginResult, error) {
+func (m *mockUserUseCase) Login(_ context.Context, _, _ string) (*usecase.LoginResult, error) {
 	return m.loginResult, m.err
 }
 

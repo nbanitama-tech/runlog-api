@@ -1,3 +1,4 @@
+// Package middleware provides middleware functions for the RunLog API application. It includes the AuthMiddleware function, which is responsible for validating JWT tokens in incoming HTTP requests. The middleware checks for the presence of an Authorization header, verifies the token's validity, and extracts user information from the token claims. If the token is invalid or missing, the middleware responds with an appropriate HTTP error status and message, preventing unauthorized access to protected routes.
 package middleware
 
 import (
@@ -8,6 +9,7 @@ import (
 	"github.com/nbanitama-tech/runlog-api/pkg/auth"
 )
 
+// AuthMiddleware is a Gin middleware function that validates JWT tokens in incoming HTTP requests. It checks for the presence of an Authorization header, verifies the token's validity using the provided JWT secret, and extracts user information from the token claims. If the token is invalid or missing, it responds with an HTTP 401 Unauthorized status and an error message, preventing unauthorized access to protected routes.
 func AuthMiddleware(jwtSecret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")

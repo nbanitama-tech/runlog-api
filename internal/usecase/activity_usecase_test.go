@@ -17,28 +17,28 @@ type mockActivityRepository struct {
 	err             error
 }
 
-func (m *mockActivityRepository) Create(ctx context.Context, activity *model.Activity) error {
+func (m *mockActivityRepository) Create(_ context.Context, activity *model.Activity) error {
 	m.createdActivity = activity
 	return m.err
 }
 
-func (m *mockActivityRepository) FindByUserID(ctx context.Context, userID string, filter model.ActivityFilter) (*model.ActivityListResult, error) {
+func (m *mockActivityRepository) FindByUserID(_ context.Context, _ string, _ model.ActivityFilter) (*model.ActivityListResult, error) {
 	return &model.ActivityListResult{
 		Activities: m.activities,
 		Total:      len(m.activities),
 	}, m.err
 }
 
-func (m *mockActivityRepository) FindByID(ctx context.Context, userID, activityID string) (*model.Activity, error) {
+func (m *mockActivityRepository) FindByID(_ context.Context, _, _ string) (*model.Activity, error) {
 	return m.activity, m.err
 }
 
-func (m *mockActivityRepository) Update(ctx context.Context, activity *model.Activity) error {
+func (m *mockActivityRepository) Update(_ context.Context, activity *model.Activity) error {
 	m.updatedActivity = activity
 	return m.err
 }
 
-func (m *mockActivityRepository) Delete(ctx context.Context, userID, activityID string) error {
+func (m *mockActivityRepository) Delete(_ context.Context, _, activityID string) error {
 	m.deletedID = activityID
 	return m.err
 }

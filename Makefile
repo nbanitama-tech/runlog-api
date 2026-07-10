@@ -74,9 +74,6 @@ test:
 tidy:
 	go mod tidy
 
-lint:
-	golangci-lint run
-
 deps:
 	go mod download
 

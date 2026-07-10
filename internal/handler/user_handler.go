@@ -11,15 +11,18 @@ import (
 	"github.com/nbanitama-tech/runlog-api/pkg/response"
 )
 
+// UserUseCase defines the interface for user-related use case operations, including registration and login. It abstracts the underlying implementation of user management, allowing the handler to interact with user data without being tightly coupled to a specific implementation.
 type UserUseCase interface {
 	Register(ctx context.Context, name, email, password string) (*model.User, error)
 	Login(ctx context.Context, email, password string) (*usecase.LoginResult, error)
 }
 
+// UserHandler is responsible for handling user-related HTTP requests in the RunLog API application. It provides methods for user registration, login, and profile retrieval. The handler interacts with the UserUseCase interface to perform business logic operations related to user management.
 type UserHandler struct {
 	userUseCase UserUseCase
 }
 
+// NewUserHandler creates a new instance of UserHandler with the provided UserUseCase. It initializes the handler with the necessary dependencies to handle user-related HTTP requests, such as registration and login.
 func NewUserHandler(userUseCase UserUseCase) *UserHandler {
 	return &UserHandler{userUseCase: userUseCase}
 }
