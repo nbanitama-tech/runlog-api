@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// CORSMiddleware creates a Gin middleware function that configures CORS settings for the application. It allows specified origins and methods, and includes necessary headers for cross-origin requests.
 func CORSMiddleware(allowOrigins []string) gin.HandlerFunc {
 
 	return cors.New(cors.Config{

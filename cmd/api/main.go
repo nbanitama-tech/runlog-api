@@ -1,3 +1,4 @@
+// Package main is the entry point of the RunLog API application. It initializes the application, sets up the database connection, configures routes and middleware, and starts the HTTP server. The application provides endpoints for user registration, login, profile management, and activity tracking. It also includes health check endpoints and Swagger documentation for API reference.
 package main
 
 import (

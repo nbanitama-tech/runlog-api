@@ -2,6 +2,7 @@ package dto
 
 import "time"
 
+// ActivityResponse represents the response payload for an activity. It includes fields such as ID, Title, SportType, DistanceKM, DurationSeconds, AvgPaceSeconds, ElevationGainM, ActivityDate, Notes, CreatedAt, and UpdatedAt. The struct is used to transfer activity data from the business logic layer to the API response.
 type ActivityResponse struct {
 	ID              string    `json:"id"`
 	Title           string    `json:"title"`
@@ -16,11 +17,13 @@ type ActivityResponse struct {
 	UpdatedAt       time.Time `json:"updated_at,omitempty"`
 }
 
+// ActivityResponseEnvelope represents the response envelope for a single activity. It includes a success flag and the activity data. The struct is used to wrap the activity response in a consistent format for API responses.
 type ActivityResponseEnvelope struct {
 	Success bool             `json:"success" example:"true"`
 	Data    ActivityResponse `json:"data"`
 }
 
+// ActivityListResponseEnvelope represents the response envelope for a list of activities. It includes a success flag and a slice of activity data. The struct is used to wrap the list of activity responses in a consistent format for API responses.
 type ActivityListResponseEnvelope struct {
 	Success bool               `json:"success" example:"true"`
 	Data    []ActivityResponse `json:"data"`
