@@ -6,9 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nbanitama-tech/runlog-api/internal/model"
 	"github.com/nbanitama-tech/runlog-api/internal/usecase"
-	"github.com/nbanitama-tech/runlog-api/pkg/dto"
 	pkgerrors "github.com/nbanitama-tech/runlog-api/pkg/errors"
 	"github.com/nbanitama-tech/runlog-api/pkg/response"
+	"github.com/nbanitama-tech/runlog-api/pkg/transport/dto"
 )
 
 // UserUseCase defines the interface for user-related use case operations, including registration and login. It abstracts the underlying implementation of user management, allowing the handler to interact with user data without being tightly coupled to a specific implementation.

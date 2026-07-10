@@ -5,8 +5,8 @@ import (
 
 	"github.com/nbanitama-tech/runlog-api/internal/model"
 	"github.com/nbanitama-tech/runlog-api/internal/repository"
-	"github.com/nbanitama-tech/runlog-api/pkg/auth"
 	pkgerrors "github.com/nbanitama-tech/runlog-api/pkg/errors"
+	"github.com/nbanitama-tech/runlog-api/pkg/infrastructure/auth"
 	"golang.org/x/crypto/bcrypt"
 )
 

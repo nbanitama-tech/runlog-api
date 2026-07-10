@@ -74,14 +74,14 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponseEnvelope"
+                                "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ActivityResponseEnvelope"
                             }
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse"
                         }
                     }
                 }
@@ -110,7 +110,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.CreateActivityRequest"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.CreateActivityRequest"
                         }
                     }
                 ],
@@ -118,19 +118,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponseEnvelope"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ActivityResponseEnvelope"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse"
                         }
                     }
                 }
@@ -164,13 +164,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponseEnvelope"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ActivityResponseEnvelope"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse"
                         }
                     }
                 }
@@ -206,7 +206,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.UpdateActivityRequest"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.UpdateActivityRequest"
                         }
                     }
                 ],
@@ -214,13 +214,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponseEnvelope"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ActivityResponseEnvelope"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse"
                         }
                     }
                 }
@@ -255,7 +255,7 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse"
                         }
                     }
                 }
@@ -281,7 +281,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.LoginRequest"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.LoginRequest"
                         }
                     }
                 ],
@@ -289,13 +289,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.LoginResponseEnvelope"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.LoginResponseEnvelope"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse"
                         }
                     }
                 }
@@ -320,13 +320,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponseEnvelope"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.UserResponseEnvelope"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse"
                         }
                     }
                 }
@@ -352,7 +352,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.RegisterRequest"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.RegisterRequest"
                         }
                     }
                 ],
@@ -360,19 +360,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponseEnvelope"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.UserResponseEnvelope"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse"
+                            "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse"
                         }
                     }
                 }
@@ -380,7 +380,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponse": {
+        "github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ActivityResponse": {
             "type": "object",
             "properties": {
                 "activity_date": {
@@ -418,11 +418,11 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponseEnvelope": {
+        "github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ActivityResponseEnvelope": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponse"
+                    "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ActivityResponse"
                 },
                 "success": {
                     "type": "boolean",
@@ -430,7 +430,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_nbanitama-tech_runlog-api_pkg_dto.CreateActivityRequest": {
+        "github_com_nbanitama-tech_runlog-api_pkg_transport_dto.CreateActivityRequest": {
             "type": "object",
             "required": [
                 "activity_date",
@@ -462,7 +462,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorBody": {
+        "github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorBody": {
             "type": "object",
             "properties": {
                 "code": {
@@ -475,11 +475,11 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse": {
+        "github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
-                    "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorBody"
+                    "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorBody"
                 },
                 "success": {
                     "type": "boolean",
@@ -487,7 +487,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_nbanitama-tech_runlog-api_pkg_dto.LoginRequest": {
+        "github_com_nbanitama-tech_runlog-api_pkg_transport_dto.LoginRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -502,22 +502,22 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_nbanitama-tech_runlog-api_pkg_dto.LoginResponse": {
+        "github_com_nbanitama-tech_runlog-api_pkg_transport_dto.LoginResponse": {
             "type": "object",
             "properties": {
                 "token": {
                     "type": "string"
                 },
                 "user": {
-                    "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponse"
+                    "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.UserResponse"
                 }
             }
         },
-        "github_com_nbanitama-tech_runlog-api_pkg_dto.LoginResponseEnvelope": {
+        "github_com_nbanitama-tech_runlog-api_pkg_transport_dto.LoginResponseEnvelope": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.LoginResponse"
+                    "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.LoginResponse"
                 },
                 "success": {
                     "type": "boolean",
@@ -525,17 +525,17 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_nbanitama-tech_runlog-api_pkg_dto.PaginatedActivityResponseEnvelope": {
+        "github_com_nbanitama-tech_runlog-api_pkg_transport_dto.PaginatedActivityResponseEnvelope": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponse"
+                        "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ActivityResponse"
                     }
                 },
                 "meta": {
-                    "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.PaginationMeta"
+                    "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.PaginationMeta"
                 },
                 "success": {
                     "type": "boolean",
@@ -543,7 +543,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_nbanitama-tech_runlog-api_pkg_dto.PaginationMeta": {
+        "github_com_nbanitama-tech_runlog-api_pkg_transport_dto.PaginationMeta": {
             "type": "object",
             "properties": {
                 "page": {
@@ -564,7 +564,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_nbanitama-tech_runlog-api_pkg_dto.RegisterRequest": {
+        "github_com_nbanitama-tech_runlog-api_pkg_transport_dto.RegisterRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -584,7 +584,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_nbanitama-tech_runlog-api_pkg_dto.UpdateActivityRequest": {
+        "github_com_nbanitama-tech_runlog-api_pkg_transport_dto.UpdateActivityRequest": {
             "type": "object",
             "required": [
                 "activity_date",
@@ -616,7 +616,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponse": {
+        "github_com_nbanitama-tech_runlog-api_pkg_transport_dto.UserResponse": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -633,11 +633,11 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponseEnvelope": {
+        "github_com_nbanitama-tech_runlog-api_pkg_transport_dto.UserResponseEnvelope": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponse"
+                    "$ref": "#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.UserResponse"
                 },
                 "success": {
                     "type": "boolean",
