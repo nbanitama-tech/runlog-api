@@ -16,8 +16,8 @@ import (
 	"github.com/nbanitama-tech/runlog-api/internal/handler"
 	"github.com/nbanitama-tech/runlog-api/internal/repository"
 	"github.com/nbanitama-tech/runlog-api/internal/usecase"
-	logger "github.com/nbanitama-tech/runlog-api/pkg/logging"
-	"github.com/nbanitama-tech/runlog-api/pkg/middleware"
+	logger "github.com/nbanitama-tech/runlog-api/pkg/observability/logging"
+	"github.com/nbanitama-tech/runlog-api/pkg/transport/middleware"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )

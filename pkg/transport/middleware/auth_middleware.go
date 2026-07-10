@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nbanitama-tech/runlog-api/pkg/auth"
+	"github.com/nbanitama-tech/runlog-api/pkg/infrastructure/auth"
 )
 
 // AuthMiddleware is a Gin middleware function that validates JWT tokens in incoming HTTP requests. It checks for the presence of an Authorization header, verifies the token's validity using the provided JWT secret, and extracts user information from the token claims. If the token is invalid or missing, it responds with an HTTP 401 Unauthorized status and an error message, preventing unauthorized access to protected routes.

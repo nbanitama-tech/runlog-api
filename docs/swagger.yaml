@@ -1,6 +1,6 @@
 basePath: /api/v1
 definitions:
-  github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponse:
+  github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ActivityResponse:
     properties:
       activity_date:
         type: string
@@ -25,15 +25,15 @@ definitions:
       updated_at:
         type: string
     type: object
-  github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponseEnvelope:
+  github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ActivityResponseEnvelope:
     properties:
       data:
-        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponse'
+        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ActivityResponse'
       success:
         example: true
         type: boolean
     type: object
-  github_com_nbanitama-tech_runlog-api_pkg_dto.CreateActivityRequest:
+  github_com_nbanitama-tech_runlog-api_pkg_transport_dto.CreateActivityRequest:
     properties:
       activity_date:
         type: string
@@ -55,7 +55,7 @@ definitions:
     - duration_seconds
     - title
     type: object
-  github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorBody:
+  github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorBody:
     properties:
       code:
         example: UNAUTHORIZED
@@ -64,15 +64,15 @@ definitions:
         example: invalid email or password
         type: string
     type: object
-  github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse:
+  github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse:
     properties:
       error:
-        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorBody'
+        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorBody'
       success:
         example: false
         type: boolean
     type: object
-  github_com_nbanitama-tech_runlog-api_pkg_dto.LoginRequest:
+  github_com_nbanitama-tech_runlog-api_pkg_transport_dto.LoginRequest:
     properties:
       email:
         type: string
@@ -82,34 +82,34 @@ definitions:
     - email
     - password
     type: object
-  github_com_nbanitama-tech_runlog-api_pkg_dto.LoginResponse:
+  github_com_nbanitama-tech_runlog-api_pkg_transport_dto.LoginResponse:
     properties:
       token:
         type: string
       user:
-        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponse'
+        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.UserResponse'
     type: object
-  github_com_nbanitama-tech_runlog-api_pkg_dto.LoginResponseEnvelope:
+  github_com_nbanitama-tech_runlog-api_pkg_transport_dto.LoginResponseEnvelope:
     properties:
       data:
-        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.LoginResponse'
+        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.LoginResponse'
       success:
         example: true
         type: boolean
     type: object
-  github_com_nbanitama-tech_runlog-api_pkg_dto.PaginatedActivityResponseEnvelope:
+  github_com_nbanitama-tech_runlog-api_pkg_transport_dto.PaginatedActivityResponseEnvelope:
     properties:
       data:
         items:
-          $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponse'
+          $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ActivityResponse'
         type: array
       meta:
-        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.PaginationMeta'
+        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.PaginationMeta'
       success:
         example: true
         type: boolean
     type: object
-  github_com_nbanitama-tech_runlog-api_pkg_dto.PaginationMeta:
+  github_com_nbanitama-tech_runlog-api_pkg_transport_dto.PaginationMeta:
     properties:
       page:
         example: 1
@@ -124,7 +124,7 @@ definitions:
         example: 5
         type: integer
     type: object
-  github_com_nbanitama-tech_runlog-api_pkg_dto.RegisterRequest:
+  github_com_nbanitama-tech_runlog-api_pkg_transport_dto.RegisterRequest:
     properties:
       email:
         type: string
@@ -138,7 +138,7 @@ definitions:
     - name
     - password
     type: object
-  github_com_nbanitama-tech_runlog-api_pkg_dto.UpdateActivityRequest:
+  github_com_nbanitama-tech_runlog-api_pkg_transport_dto.UpdateActivityRequest:
     properties:
       activity_date:
         type: string
@@ -160,7 +160,7 @@ definitions:
     - duration_seconds
     - title
     type: object
-  github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponse:
+  github_com_nbanitama-tech_runlog-api_pkg_transport_dto.UserResponse:
     properties:
       created_at:
         type: string
@@ -171,10 +171,10 @@ definitions:
       name:
         type: string
     type: object
-  github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponseEnvelope:
+  github_com_nbanitama-tech_runlog-api_pkg_transport_dto.UserResponseEnvelope:
     properties:
       data:
-        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponse'
+        $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.UserResponse'
       success:
         example: true
         type: boolean
@@ -221,12 +221,12 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponseEnvelope'
+              $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ActivityResponseEnvelope'
             type: array
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse'
       security:
       - BearerAuth: []
       summary: List activities
@@ -242,22 +242,22 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.CreateActivityRequest'
+          $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.CreateActivityRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponseEnvelope'
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ActivityResponseEnvelope'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Create activity
@@ -280,7 +280,7 @@ paths:
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Delete activity
@@ -300,11 +300,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponseEnvelope'
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ActivityResponseEnvelope'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Get activity
@@ -325,18 +325,18 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.UpdateActivityRequest'
+          $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.UpdateActivityRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ActivityResponseEnvelope'
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ActivityResponseEnvelope'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Update activity
@@ -353,18 +353,18 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.LoginRequest'
+          $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.LoginRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.LoginResponseEnvelope'
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.LoginResponseEnvelope'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse'
       summary: User login
       tags:
       - Users
@@ -377,11 +377,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponseEnvelope'
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.UserResponseEnvelope'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Get current user
@@ -398,22 +398,22 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.RegisterRequest'
+          $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.RegisterRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.UserResponseEnvelope'
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.UserResponseEnvelope'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_dto.ErrorResponse'
+            $ref: '#/definitions/github_com_nbanitama-tech_runlog-api_pkg_transport_dto.ErrorResponse'
       summary: Register a new user
       tags:
       - Users

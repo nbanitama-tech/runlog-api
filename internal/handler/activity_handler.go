@@ -8,9 +8,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nbanitama-tech/runlog-api/internal/model"
-	"github.com/nbanitama-tech/runlog-api/pkg/dto"
 	pkgerrors "github.com/nbanitama-tech/runlog-api/pkg/errors"
 	"github.com/nbanitama-tech/runlog-api/pkg/response"
+	"github.com/nbanitama-tech/runlog-api/pkg/transport/dto"
 )
 
 // ActivityUseCase defines the interface for the activity use case, which encapsulates the business logic for managing user activities. It includes methods for creating, listing, retrieving, updating, and deleting activities, allowing the ActivityHandler to interact with the underlying business logic layer.
