@@ -10,15 +10,22 @@ APP_NAME=runlog-api
 	migrate-up migrate-down migrate-force migrate-create \
 	docker-build docker-run docker-tag docker-push \
 	test-db-drop test-db-create test-db-migrate \
-	test test-integration test-all
+	test test-integration test-all \
+	observability-up observability-down observability-logs prometheus-reload
 
+MIGRATIONS_DIR=migrations
 DB_CONTAINER=runlog-postgres
 DB_USER=runlog
 DB_NAME=runlog_db
-MIGRATIONS_DIR=migrations
-DB_URL=postgres://runlog:runlog_password@localhost:5432/runlog_db?sslmode=
-TEST_DB_URL := postgres://runlog:runlog_password@localhost:5432/runlog_test_db?sslmode=disable
+DB_PASSWORD := runlog_password
+DB_SSLMODE := disable
+DB_HOST := localhost
+DB_PORT := 5432
 
+DB_URL := postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=$(DB_SSLMODE)
+
+TEST_DB_NAME := runlog_test_db
+TEST_DB_URL := postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(TEST_DB_NAME)?sslmode=$(DB_SSLMODE)
 
 
 #########################################
@@ -170,3 +177,24 @@ test-all: test test-integration
 ############################################
 swagger:
 	swag init -g cmd/api/main.go --parseDependency --parseInternal
+
+#########################################
+# Monitoring commands
+#########################################
+observability-up:
+	docker compose up -d prometheus grafana
+
+observability-down:
+	docker compose stop prometheus grafana
+
+observability-logs:
+	docker compose logs -f prometheus grafana
+
+prometheus-reload:
+	curl -X POST http://localhost:9090/-/reload
+
+grafana-restart:
+	docker compose restart grafana
+
+observability-status:
+	docker compose ps prometheus grafana

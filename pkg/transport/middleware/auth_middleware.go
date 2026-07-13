@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/nbanitama-tech/runlog-api/internal/requestcontext"
 	"github.com/nbanitama-tech/runlog-api/pkg/infrastructure/auth"
 )
 
@@ -41,8 +42,8 @@ func AuthMiddleware(jwtSecret string) gin.HandlerFunc {
 			return
 		}
 
-		c.Set("user_id", claims.UserID)
-		c.Set("email", claims.Email)
+		c.Set(requestcontext.UserIDKey, claims.UserID)
+		c.Set(requestcontext.EmailKey, claims.Email)
 
 		c.Next()
 	}
