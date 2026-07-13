@@ -18,8 +18,13 @@ import (
 	"github.com/nbanitama-tech/runlog-api/internal/usecase"
 	logger "github.com/nbanitama-tech/runlog-api/pkg/observability/logging"
 	"github.com/nbanitama-tech/runlog-api/pkg/transport/middleware"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+
+	appmetrics "github.com/nbanitama-tech/runlog-api/pkg/observability/metrics"
 )
 
 // @title RunLog API
@@ -47,6 +52,15 @@ func main() {
 
 	appLog := logger.New()
 
+	metricsRegistry := prometheus.NewRegistry()
+
+	metricsRegistry.MustRegister(
+		collectors.NewGoCollector(),
+		collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}),
+	)
+
+	httpMetrics := appmetrics.NewHTTPMetrics(metricsRegistry)
+
 	userRepo := repository.NewUserRepository(db)
 	userUseCase := usecase.NewUserUseCase(userRepo, cfg.JWT.Secret, cfg.JWT.ExpiryHours)
 	userHandler := handler.NewUserHandler(userUseCase)
@@ -65,6 +79,7 @@ func main() {
 	r.Use(middleware.RequestIDMiddleware())
 	r.Use(middleware.CORSMiddleware(cfg.CORS.AllowOrigins))
 	r.Use(middleware.LoggerMiddleware(appLog))
+	r.Use(middleware.MetricsMiddleware(httpMetrics))
 
 	healthHandler := handler.NewHealthHandler(db, cfg.App, startedAt)
 	r.GET("/health", healthHandler.Check)
@@ -89,6 +104,13 @@ func main() {
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	metricsHandler := promhttp.HandlerFor(
+		metricsRegistry,
+		promhttp.HandlerOpts{},
+	)
+
+	r.GET("/metrics", gin.WrapH(metricsHandler))
 
 	srv := &http.Server{
 		Addr:    ":" + cfg.App.Port,

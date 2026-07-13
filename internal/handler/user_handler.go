@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nbanitama-tech/runlog-api/internal/model"
+	"github.com/nbanitama-tech/runlog-api/internal/requestcontext"
 	"github.com/nbanitama-tech/runlog-api/internal/usecase"
 	pkgerrors "github.com/nbanitama-tech/runlog-api/pkg/errors"
 	"github.com/nbanitama-tech/runlog-api/pkg/response"
@@ -107,8 +108,8 @@ func (h *UserHandler) Login(c *gin.Context) {
 //	@Failure		401	{object}	dto.ErrorResponse
 //	@Router			/users/profile [get]
 func (h *UserHandler) Profile(c *gin.Context) {
-	userID := c.GetString("user_id")
-	email := c.GetString("email")
+	userID := requestcontext.UserID(c)
+	email := requestcontext.Email(c)
 
 	response.OK(c, gin.H{
 		"id":    userID,
