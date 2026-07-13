@@ -1,15 +1,18 @@
+// Package metrics provides a set of Prometheus metrics for monitoring HTTP requests in the Runlog API.
 package metrics
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+// HTTPMetrics defines a set of Prometheus metrics for monitoring HTTP requests. It includes counters for total requests, histograms for request durations, and gauges for in-flight requests. These metrics can be used to track the performance and health of the Runlog API's HTTP endpoints.
 type HTTPMetrics struct {
 	RequestsTotal    *prometheus.CounterVec
 	RequestDuration  *prometheus.HistogramVec
 	RequestsInFlight prometheus.Gauge
 }
 
+// NewHTTPMetrics creates a new instance of HTTPMetrics and registers the metrics with the provided Prometheus registry. It initializes counters, histograms, and gauges for monitoring HTTP requests, allowing for tracking of request counts, durations, and in-flight requests in the Runlog API.
 func NewHTTPMetrics(registry prometheus.Registerer) *HTTPMetrics {
 	httpMetrics := &HTTPMetrics{
 		RequestsTotal: prometheus.NewCounterVec(

@@ -19,6 +19,7 @@ import (
 	logger "github.com/nbanitama-tech/runlog-api/pkg/observability/logging"
 	"github.com/nbanitama-tech/runlog-api/pkg/transport/middleware"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -54,8 +55,8 @@ func main() {
 	metricsRegistry := prometheus.NewRegistry()
 
 	metricsRegistry.MustRegister(
-		prometheus.NewGoCollector(),
-		prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}),
+		collectors.NewGoCollector(),
+		collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}),
 	)
 
 	httpMetrics := appmetrics.NewHTTPMetrics(metricsRegistry)
