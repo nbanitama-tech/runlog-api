@@ -44,12 +44,6 @@ func main() {
 		log.Fatalf("failed to load config: %v", err)
 	}
 
-	db, err := config.NewPostgresPool(ctx, cfg.Database.URL)
-	if err != nil {
-		log.Fatalf("failed to connect database: %v", err)
-	}
-	defer db.Close()
-
 	appLog := logger.New()
 
 	metricsRegistry := prometheus.NewRegistry()
@@ -60,6 +54,16 @@ func main() {
 	)
 
 	httpMetrics := appmetrics.NewHTTPMetrics(metricsRegistry)
+	databaseMetrics := appmetrics.NewDatabaseMetrics(metricsRegistry)
+	databaseTracer := appmetrics.NewPGXTracer(databaseMetrics)
+
+	db, err := config.NewPostgresPool(ctx, cfg.Database.URL, databaseTracer)
+	if err != nil {
+		log.Fatalf("failed to connect database: %v", err)
+	}
+	defer db.Close()
+
+	metricsRegistry.MustRegister(appmetrics.NewPGXPoolCollector(db))
 
 	userRepo := repository.NewUserRepository(db)
 	userUseCase := usecase.NewUserUseCase(userRepo, cfg.JWT.Secret, cfg.JWT.ExpiryHours)
