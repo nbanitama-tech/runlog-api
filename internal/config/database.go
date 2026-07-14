@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -11,7 +12,18 @@ type DatabaseConfig struct {
 	URL string
 }
 
-// NewPostgresPool creates a new PostgreSQL connection pool using the provided database URL. It returns a pointer to the pgxpool.Pool instance and any error encountered during the connection process. The function uses the pgxpool package to manage the connection pool, allowing efficient handling of multiple database connections in the RunLog API application.
-func NewPostgresPool(ctx context.Context, databaseURL string) (*pgxpool.Pool, error) {
-	return pgxpool.New(ctx, databaseURL)
+// NewPostgresPool creates a new PostgreSQL connection pool using the provided database URL and query tracer. It parses the database URL, configures the connection settings, and returns a pgxpool.Pool instance that can be used to manage database connections efficiently. The function also handles any errors that may occur during the configuration process.
+func NewPostgresPool(
+	ctx context.Context,
+	databaseURL string,
+	tracer pgx.QueryTracer,
+) (*pgxpool.Pool, error) {
+	poolConfig, err := pgxpool.ParseConfig(databaseURL)
+	if err != nil {
+		return nil, err
+	}
+
+	poolConfig.ConnConfig.Tracer = tracer
+
+	return pgxpool.NewWithConfig(ctx, poolConfig)
 }
